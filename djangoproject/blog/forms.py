@@ -1,11 +1,15 @@
 from django import forms
+from django.forms import ModelForm
 from django.forms.widgets import PasswordInput
+from .models import *
 
-class AuthRegForm(forms.Form):
-    email = forms.EmailField()
-    password = forms.CharField(widget=PasswordInput)
+class AuthRegForm(ModelForm):
+    class Meta:
+        model = User
+        fields = ['nickname', 'email', 'password']
 
-class UserForm(forms.Form):
-    nickname = forms.CharField()
-    name = forms.CharField()
-    age = forms.IntegerField()
+class UserForm(forms.ModelForm):
+    class Meta:
+        nickname = forms.CharField()
+        name = forms.CharField()
+        age = forms.IntegerField()
