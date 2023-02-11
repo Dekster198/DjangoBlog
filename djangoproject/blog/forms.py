@@ -3,10 +3,17 @@ from django.forms import ModelForm
 from django.forms.widgets import PasswordInput
 from .models import *
 
-class AuthRegForm(ModelForm):
+class RegForm(ModelForm):
+    password = forms.CharField(widget=forms.PasswordInput)
     class Meta:
         model = User
         fields = ['nickname', 'email', 'password']
+
+class AuthForm(ModelForm):
+    password = forms.CharField(widget=forms.PasswordInput)
+    class Meta:
+        model = User
+        fields = ['email', 'password']
 
 class UserForm(forms.ModelForm):
     class Meta:
