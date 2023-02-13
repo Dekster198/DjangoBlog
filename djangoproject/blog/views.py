@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
+from django.contrib.auth import authenticate
 from .forms import *
 
 # Create your views here.
@@ -9,16 +10,16 @@ def index(request):
 def login(request):
     if request.method == 'POST':
         auth_form = AuthForm(request.POST)
-        if auth_form.is_valid():
-            email = auth_form.cleaned_data['email']
-            password = auth_form.cleaned_data['password']
-            if User.objects.filter(email=email, password=password):
-                return redirect('home')
-            else:
-                return redirect('registration')
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            return HttpResponse(f'Hello, {user}')
+        else:
+            return HttpResponse('Oops...')
     else:
         auth_form = AuthForm()
-        return render(request, 'login.html', context={'form': auth_form})
+    return render(request, 'login.html', context={'auth_form': auth_form})
 
 def registration(request):
     if request.method == 'POST':
@@ -28,4 +29,4 @@ def registration(request):
             return redirect('home')
     else:
         reg_form = RegForm()
-        return render(request, 'registration.html', context={'form': reg_form})
+        return render(request, 'registration.html', context={'reg_form': reg_form})

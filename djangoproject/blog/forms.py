@@ -7,13 +7,13 @@ class RegForm(ModelForm):
     password = forms.CharField(widget=forms.PasswordInput)
     class Meta:
         model = User
-        fields = ['nickname', 'email', 'password']
+        fields = ['username', 'email', 'password']
 
 class AuthForm(ModelForm):
     password = forms.CharField(widget=forms.PasswordInput)
     class Meta:
         model = User
-        fields = ['email', 'password']
+        fields = ['username', 'password']
 
 class UserForm(forms.ModelForm):
     class Meta:

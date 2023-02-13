@@ -1,20 +1,20 @@
 <html>
-    <head>
-        <meta charset="utf-8">
-        <title>Войти</title>
-    </head>
-    <body>
-        <h2 align="center">Войти в блог</h2>
-        <center>
-            <form method="POST">
-                {% csrf_token %}
-                <table>
-                    {{ form }}
-                </table>
-                <input type="submit" value="Войти">
-                <br>
-                <a href="{% url 'registration' %}">Нет учётной записи? Зарегистрируйтесь!</a>
-            </form>
-        </center>
-    </body>
+<head>
+    <meta charset="utf-8">
+    <title>Войти</title>
+</head>
+<body>
+<h2 align="center">Войти в блог</h2>
+<center>
+    <form method="POST">
+        {% csrf_token %}
+        <table>
+            {{ auth_form }}
+        </table>
+        <input type="submit" value="Войти">
+        <br>
+        <a href="{% url 'registration' %}">Нет учётной записи? Зарегистрируйтесь!</a>
+    </form>
+</center>
+</body>
 </html>
