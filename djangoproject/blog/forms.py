@@ -20,3 +20,8 @@ class UserForm(forms.ModelForm):
         nickname = forms.CharField()
         name = forms.CharField()
         age = forms.IntegerField()
+
+class AddPost(forms.ModelForm):
+    class Meta:
+        model = Post
+        fields = ['title', 'text']

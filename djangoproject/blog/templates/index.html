@@ -8,5 +8,13 @@
 <p align="right">
     <button><a href="{% url 'login' %}">Войти</a></button>
     <a href="{% url 'registration' %}">Регистрация</a></p>
+
+    {% if user.is_authenticated %}
+    <p align="center">Привет, {{ user.username }}</p>
+        <center>
+            <button><a href="{% url 'new_post' %}">Добавить пост</a></button>
+            <button><a href="{% url 'logout' %}">Выйти</a></button>
+        </center>
+    {% endif %}
 </body>
 </html>
