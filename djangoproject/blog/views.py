@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login as auth_login, logout
 from django.contrib.auth.models import User
@@ -42,7 +42,7 @@ def logoutView(request):
     logout(request)
     return redirect('home')
 
-def newPost(request):
+def new_post(request):
     if request.method == 'POST':
         post_form = AddPost(request.POST)
         if post_form.is_valid():
@@ -54,3 +54,9 @@ def newPost(request):
     else:
         post_form = AddPost()
         return render(request, 'new_post.html', context={'post_form': post_form})
+    
+def show_post(request, the_slug):
+    post = get_object_or_404(Post, slug=the_slug)
+
+    return render(request, 'post.html', context={'title': post.title, 'text': post.text, 
+                                                 'author': post.author, 'creation_time': post.creation_time})
