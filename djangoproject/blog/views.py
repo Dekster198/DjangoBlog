@@ -42,11 +42,12 @@ def logoutView(request):
 
 def newPost(request):
     if request.method == 'POST':
-        user = request.user.username
-        print(user)
         post_form = AddPost(request.POST)
         if post_form.is_valid():
+            post = post_form.save(commit=False)
+            post.author = request.user
             post_form.save()
+
             return redirect('home')
     else:
         post_form = AddPost()

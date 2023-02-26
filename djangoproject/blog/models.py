@@ -17,7 +17,7 @@ class Account(models.Model):
 #     registration_time = models.DateTimeField(auto_now_add=True)
 
 class Post(models.Model):
-    author = models.ForeignKey(Account, on_delete=models.CASCADE, default=None)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=30)
     text = models.TextField()
     creation_time = models.DateTimeField(auto_now_add=True)
