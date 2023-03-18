@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.urls import path
+from django.conf import settings
 from .views import *
 
 urlpatterns = [
@@ -9,4 +10,5 @@ urlpatterns = [
     path('new_post', new_post, name='new_post'),
     path('logout', logoutView, name='logout'),
     path('post/<slug:the_slug>', show_post, name='show_post'),
+    path('profile', profile, name='profile'),
 ]

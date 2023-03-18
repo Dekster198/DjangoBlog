@@ -15,13 +15,19 @@ class AuthForm(ModelForm):
         model = User
         fields = ['username', 'password']
 
-class UserForm(forms.ModelForm):
+class ProfileForm(ModelForm):
+    username = forms.CharField(required=False, label='Имя пользователя')
+    
     class Meta:
-        nickname = forms.CharField()
-        name = forms.CharField()
-        age = forms.IntegerField()
+        model = User
+        fields = ['username', 'first_name']
 
-class AddPost(forms.ModelForm):
+class ProfilePhoto(ModelForm):
+    class Meta:
+        model = Account
+        fields = ['photo']
+
+class AddPost(ModelForm):
     class Meta:
         model = Post
         fields = ['title', 'text']

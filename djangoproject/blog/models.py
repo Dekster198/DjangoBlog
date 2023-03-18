@@ -6,7 +6,7 @@ from .utils import slugify
 # Create your models here.
 class Account(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    photo = models.ImageField(upload_to='images/photo/')
+    photo = models.ImageField(upload_to='static/images/avatar/', default='static/images/avatar/default_img.jpg', blank=True)
 
 class Post(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -15,7 +15,7 @@ class Post(models.Model):
     text = models.TextField()
     creation_time = models.DateTimeField(auto_now_add=True)
     
-    def save(self, *args, **kwargs): # new
+    def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.title)
         return super().save(*args, **kwargs)

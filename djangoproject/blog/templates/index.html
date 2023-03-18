@@ -8,7 +8,7 @@
 <p align="right">
     {% if user.is_authenticated %}
     <button><a href="{% url 'logout' %}">Выйти</a></button>
-    <p align="center">Привет, {{ user.username }}</p>
+    <p align="center">Привет, <a href="{% url 'profile' %}">{{ user.username }}</a><img src="{{ acc.photo.url }}" width="50", height="50"></p>
         <center>
             <button><a href="{% url 'new_post' %}">Добавить пост</a></button>
         </center>

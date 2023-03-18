@@ -7,8 +7,16 @@ from .forms import *
 
 # Create your views here.
 def index(request):
-    posts = Post.objects.all()
-    return render(request, 'index.html', context={'posts': posts})
+    try:
+        posts = Post.objects.all()
+        user = User.objects.get(username=request.user)
+        acc = Account.objects.get(user=user)
+        
+        return render(request, 'index.html', context={'posts': posts, 'acc': acc})
+    except User.DoesNotExist:
+        user=None
+    
+    return render(request, 'index.html')
 
 def registration(request):
     if request.method == 'POST':
@@ -18,6 +26,8 @@ def registration(request):
         password = request.POST['password']
         user = User.objects.create_user(username, email, password)
         user.save()
+        account = Account.objects.create(user=user)
+        account.save()
         return redirect('home')
     else:
         reg_form = RegForm()
@@ -60,3 +70,27 @@ def show_post(request, the_slug):
 
     return render(request, 'post.html', context={'title': post.title, 'text': post.text, 
                                                  'author': post.author, 'creation_time': post.creation_time})
+
+def profile(request):
+    if request.method == 'POST':
+        profile_form = ProfileForm(request.POST)
+        profile_photo = ProfilePhoto(request.POST, request.FILES)
+        if profile_form.is_valid() and profile_photo.is_valid():
+            user = User.objects.get(username=request.user)
+            acc = Account.objects.get(user=user)
+            if profile_form.cleaned_data['username'] != '':
+                username = profile_form.cleaned_data['username']
+                user.username = username
+            if profile_form.cleaned_data['first_name'] != '':
+                first_name = profile_form.cleaned_data['first_name']
+                user.first_name = first_name
+            if profile_photo.cleaned_data['photo'] is not None:
+                photo = profile_photo.cleaned_data['photo']
+                acc.photo = photo
+            user.save()
+            acc.save()
+    else:
+        profile_form = ProfileForm()
+        profile_photo = ProfilePhoto()
+    return render(request, 'profile.html', context={'profile_form': profile_form, 
+                                                    'profile_photo': profile_photo})
