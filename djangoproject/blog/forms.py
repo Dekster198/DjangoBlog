@@ -31,3 +31,8 @@ class AddPost(ModelForm):
     class Meta:
         model = Post
         fields = ['title', 'text']
+
+class AddComment(ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['comment']

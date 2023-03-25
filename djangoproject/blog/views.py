@@ -2,6 +2,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login as auth_login, logout
 from django.contrib.auth.models import User
+from django.views import View
 from .models import *
 from .forms import *
 
@@ -64,12 +65,21 @@ def new_post(request):
     else:
         post_form = AddPost()
         return render(request, 'new_post.html', context={'post_form': post_form})
-    
-def show_post(request, the_slug):
-    post = get_object_or_404(Post, slug=the_slug)
 
-    return render(request, 'post.html', context={'title': post.title, 'text': post.text, 
-                                                 'author': post.author, 'creation_time': post.creation_time})
+class PostComment(View):
+    def get(self, request, the_slug):
+        post = get_object_or_404(Post, slug=the_slug)
+        comments = Comment.objects.all()
+        comment_form = AddComment()
+
+        return render(request, 'post.html', context={'title': post.title, 'text': post.text, 
+                                                 'author': post.author, 'creation_time': post.creation_time, 'comment_form': comment_form,
+                                                 'comments': comments})
+    
+    def post(self, request):
+        comment_form = AddComment(request.POST)
+        if comment_form.is_vaild():
+            pass
 
 def profile(request):
     if request.method == 'POST':

@@ -8,3 +8,4 @@ class PostAdmin(admin.ModelAdmin):
 
 admin.site.register(Account)
 admin.site.register(Post, PostAdmin)
+admin.site.register(Comment)

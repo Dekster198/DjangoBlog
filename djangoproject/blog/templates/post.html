@@ -7,5 +7,24 @@
         <h1>{{ title }}</h1>
         Автор {{ author }}, {{ creation_time }}
         <p>{{ text }}</p>
+        <hr>
+        <h3>Добавить комментарий:</h3>
+        <form method="post">
+            {% csrf_token %}
+            <table>
+                {{ comment_form }}
+            </table>
+            <input type="submit" value="Отправить">
+        </form>
+        <table>
+            <tr>
+                {% for comment in comments %}
+                    <strong><i>{{ comment.author.user.username }}</i></strong>
+                    <p>{{ comment.comment }}</p>
+                    {{ comment.comment_time }} 
+                    <hr>   
+                {% endfor %}
+            </tr>
+        </table>
     </body>
 </html>
