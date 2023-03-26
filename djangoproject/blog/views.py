@@ -2,6 +2,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login as auth_login, logout
 from django.contrib.auth.models import User
+from django.urls import reverse_lazy
 from django.views import View
 from .models import *
 from .forms import *
@@ -55,7 +56,7 @@ def logoutView(request):
 
 def new_post(request):
     if request.method == 'POST':
-        post_form = AddPost(request.POST)
+        post_form = AddPostForm(request.POST)
         if post_form.is_valid():
             post = post_form.save(commit=False)
             post.author = request.user
@@ -63,23 +64,31 @@ def new_post(request):
 
             return redirect('home')
     else:
-        post_form = AddPost()
+        post_form = AddPostForm()
         return render(request, 'new_post.html', context={'post_form': post_form})
 
 class PostComment(View):
     def get(self, request, the_slug):
         post = get_object_or_404(Post, slug=the_slug)
-        comments = Comment.objects.all()
-        comment_form = AddComment()
+        comments = Comment.objects.all().order_by('-comment_time')
+        comment_form = AddCommentForm()
 
         return render(request, 'post.html', context={'title': post.title, 'text': post.text, 
                                                  'author': post.author, 'creation_time': post.creation_time, 'comment_form': comment_form,
                                                  'comments': comments})
     
-    def post(self, request):
-        comment_form = AddComment(request.POST)
-        if comment_form.is_vaild():
-            pass
+    def post(self, request, the_slug):
+        comment_form = AddCommentForm(request.POST)
+        if comment_form.is_valid():
+            user_comment = comment_form.cleaned_data['comment']
+            post = Post.objects.get(slug=the_slug)
+            author = Account.objects.get(user=request.user)
+            comment = Comment.objects.create(post=post, author=author, comment=user_comment)
+            comment.save()
+
+            return redirect(reverse('show_post', kwargs={'the_slug': the_slug}))
+        
+        return render(request, 'post.html', context={'comment_form': comment_form})
 
 def profile(request):
     if request.method == 'POST':

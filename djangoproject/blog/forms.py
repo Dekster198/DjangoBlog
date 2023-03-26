@@ -27,12 +27,12 @@ class ProfilePhoto(ModelForm):
         model = Account
         fields = ['photo']
 
-class AddPost(ModelForm):
+class AddPostForm(ModelForm):
     class Meta:
         model = Post
         fields = ['title', 'text']
 
-class AddComment(ModelForm):
+class AddCommentForm(ModelForm):
     class Meta:
         model = Comment
         fields = ['comment']
