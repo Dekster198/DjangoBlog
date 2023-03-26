@@ -2,7 +2,6 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login as auth_login, logout
 from django.contrib.auth.models import User
-from django.urls import reverse_lazy
 from django.views import View
 from .models import *
 from .forms import *
