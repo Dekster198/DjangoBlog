@@ -33,6 +33,7 @@ class AddPostForm(ModelForm):
         fields = ['title', 'text']
 
 class AddCommentForm(ModelForm):
+    comment = forms.CharField(widget=forms.Textarea, label='Комментарий', required=True)
     class Meta:
         model = Comment
         fields = ['comment']

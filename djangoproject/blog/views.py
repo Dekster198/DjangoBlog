@@ -69,7 +69,7 @@ def new_post(request):
 class PostComment(View):
     def get(self, request, the_slug):
         post = get_object_or_404(Post, slug=the_slug)
-        comments = Comment.objects.all().order_by('-comment_time')
+        comments = Comment.objects.filter(post=post).order_by('-comment_time')
         comment_form = AddCommentForm()
 
         return render(request, 'post.html', context={'title': post.title, 'text': post.text, 
