@@ -4,13 +4,13 @@ from django.forms.widgets import PasswordInput
 from .models import *
 
 class RegForm(ModelForm):
-    password = forms.CharField(widget=forms.PasswordInput)
+    password = forms.CharField(widget=forms.PasswordInput, label='Пароль')
     class Meta:
         model = User
         fields = ['username', 'email', 'password']
 
 class AuthForm(ModelForm):
-    password = forms.CharField(widget=forms.PasswordInput)
+    password = forms.CharField(widget=forms.PasswordInput, label='Пароль')
     class Meta:
         model = User
         fields = ['username', 'password']
@@ -33,7 +33,7 @@ class AddPostForm(ModelForm):
         fields = ['title', 'text']
 
 class AddCommentForm(ModelForm):
-    comment = forms.CharField(widget=forms.Textarea, label='Комментарий', required=True)
+    comment = forms.CharField(widget=forms.Textarea(attrs={'rows': 3, 'cols': 150, 'style': 'resize: none'}), label='', required=True)
     class Meta:
         model = Comment
         fields = ['comment']

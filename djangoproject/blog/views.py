@@ -1,7 +1,8 @@
 from django.shortcuts import get_object_or_404, render, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseNotFound
 from django.contrib.auth import authenticate, login as auth_login, logout
 from django.contrib.auth.models import User
+from django.contrib import messages
 from django.views import View
 from .models import *
 from .forms import *
@@ -25,11 +26,15 @@ def registration(request):
         username = request.POST['username']
         email = request.POST['email']
         password = request.POST['password']
-        user = User.objects.create_user(username, email, password)
-        user.save()
-        account = Account.objects.create(user=user)
-        account.save()
-        return redirect('home')
+        if User.objects.filter(username=username).exists() or User.objects.filter(email=email).exists():
+            messages.add_message(request, messages.INFO, 'Пользователь с таким именем или email уже существует')
+            return redirect('registration')
+        else:
+            user = User.objects.create_user(username, email, password)
+            user.save()
+            account = Account.objects.create(user=user)
+            account.save()
+            return redirect('home')
     else:
         reg_form = RegForm()
         return render(request, 'registration.html', context={'reg_form': reg_form})
@@ -44,7 +49,8 @@ def login(request):
             auth_login(request, user)
             return redirect('home')
         else:
-            return HttpResponse('Oops...')
+            messages.add_message(request, messages.INFO, 'Неправильное имя пользователя или пароль')
+            return redirect('login')
     else:
         auth_form = AuthForm()
     return render(request, 'login.html', context={'auth_form': auth_form})
@@ -112,3 +118,10 @@ def profile(request):
         profile_photo = ProfilePhoto()
     return render(request, 'profile.html', context={'profile_form': profile_form, 
                                                     'profile_photo': profile_photo})
+
+def delete_profile(request, username):
+    if username == str(request.user):
+        user = User.objects.get(username=request.user)
+        logout(request)
+        user.delete()
+        return redirect('home')

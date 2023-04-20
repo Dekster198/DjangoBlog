@@ -1,20 +1,22 @@
-<html>
-<head>
-    <meta charset="utf-8">
-    <title>Регистрация</title>
-</head>
-<body>
-<h2 align="center">Регистрация</h2>
-<center>
-    <form method="POST">
-        {% csrf_token %}
-        <table>
-            {{ reg_form }}
-        </table>
-        <input type="submit" value="Загрегистрироваться">
-        <br>
-        <a href="{% url 'login' %}">Есть учётная запись? Войдите!</a>
-    </form>
-</center>
-</body>
-</html>
+{% extends 'base.html' %}
+{% load django_bootstrap5 %}
+
+{% block head %}
+<title>Регистрация</title>
+{% endblock head %}
+
+{% block content %}
+    <h2 align="center" class="display-4">Регистрация</h2>
+    <div class="container">
+        <div class="row my-5">
+            <div class="col-md-12">
+                <form method="post" class="form">
+                    {% csrf_token %}
+                    {% bootstrap_form reg_form %}
+                    <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+                    <a href="{% url 'login' %}">Есть учётная запись? Войдите!</a>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -11,4 +11,5 @@ urlpatterns = [
     path('logout', logoutView, name='logout'),
     path('post/<slug:the_slug>', PostComment.as_view(), name='show_post'),
     path('profile', profile, name='profile'),
+    path('delete_profile/<str:username>', delete_profile, name='delete_profile'),
 ]

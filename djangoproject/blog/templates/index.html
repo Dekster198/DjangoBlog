@@ -1,16 +1,18 @@
-<html>
-<head>
-    <meta charset="utf-8">
-    <title>Блог</title>
-</head>
-<body>
-<h1 align="center">Блог</h1>
+{% extends 'base.html' %}
+{% load django_bootstrap5 %}
+
+{% block head %}
+<title>Блог</title>
+{% endblock head %}
+
+{% block content %}
+<h1 align="center" class="display-4">Блог</h1>
 <p align="right">
     {% if user.is_authenticated %}
-    <button><a href="{% url 'logout' %}">Выйти</a></button>
-    <p align="center">Привет, <a href="{% url 'profile' %}">{{ user.username }}</a><img src="{{ acc.photo.url }}" width="50", height="50"></p>
+    <p align="center">Привет, <a href="{% url 'profile' %}">{{ user.username }}</a><img src="{{ acc.photo.url }}" width="50", height="50">
+    </p>
         <center>
-            <button><a href="{% url 'new_post' %}">Добавить пост</a></button>
+            <a href="{% url 'new_post' %}" class="btn btn-primary">Добавить пост</a>
         </center>
         <ul>
             {% for p in posts %}
@@ -23,8 +25,9 @@
             {% endfor %}
    </ul>
     {% else %}
-    <button><a href="{% url 'login' %}">Войти</a></button>
-    <a href="{% url 'registration' %}">Регистрация</a></p>
+    <a href="{% url 'login' %}" class="btn btn-primary">Войти</a>
+    <a href="{% url 'registration' %}">Регистрация</a>
+    </p>
     {% endif %}
-</body>
-</html>
+
+{% endblock %}
