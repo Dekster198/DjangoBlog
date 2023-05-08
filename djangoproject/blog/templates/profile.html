@@ -6,6 +6,17 @@
 {% endblock head %}
 
 {% block content %}
+<h1 class="display-6" style="margin-left: 20px;">Профиль</h1>
+<div class="container">
+    <div class="row my-5">
+        <div class="col-md-12">
+            <img src="{{ acc.photo.url }}" align="left" width="160" 
+                height="130" style=" border: 8px solid #ffffff;"/>
+                <p><strong>Имя пользователя:</strong> {{ username }}</p>
+                <p><strong>Имя:</strong> {{ name }}</p>
+        </div>
+    </div>
+</div>
 <h1 class="display-6" style="margin-left: 20px;">Изменить данные профиля</h1>
     <div class="container">
         <div class="row my-5">

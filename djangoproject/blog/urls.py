@@ -10,6 +10,6 @@ urlpatterns = [
     path('new_post', new_post, name='new_post'),
     path('logout', logoutView, name='logout'),
     path('post/<slug:the_slug>', PostComment.as_view(), name='show_post'),
-    path('profile', profile, name='profile'),
+    path('profile', Profile.as_view(), name='profile'),
     path('delete_profile/<str:username>', delete_profile, name='delete_profile'),
 ]

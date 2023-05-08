@@ -6,7 +6,7 @@ from .utils import slugify
 # Create your models here.
 class Account(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    photo = models.ImageField(upload_to='static/images/avatar/', default='static/images/avatar/default_img.jpg', blank=True, verbose_name='Фото профиля')
+    photo = models.ImageField(upload_to='static/images/avatar/', default='static/images/avatar/default/default_img.jpg', blank=True, verbose_name='Фото профиля')
 
 class Post(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)

@@ -95,8 +95,18 @@ class PostComment(View):
         
         return render(request, 'post.html', context={'comment_form': comment_form})
 
-def profile(request):
-    if request.method == 'POST':
+class Profile(View):
+    def get(self, request):
+        profile_form = ProfileForm()
+        profile_photo = ProfilePhoto()
+        username = request.user
+        name = User.objects.get(username=username)
+        acc = Account.objects.get(user=User.objects.get(username=username))
+
+        return render(request, 'profile.html', context={'acc': acc, 'username': username, 'name':name.first_name, 'profile_form': profile_form, 
+                                                    'profile_photo': profile_photo})
+    
+    def post(self, request):
         profile_form = ProfileForm(request.POST)
         profile_photo = ProfilePhoto(request.POST, request.FILES)
         if profile_form.is_valid() and profile_photo.is_valid():
@@ -113,10 +123,10 @@ def profile(request):
                 acc.photo = photo
             user.save()
             acc.save()
-    else:
-        profile_form = ProfileForm()
-        profile_photo = ProfilePhoto()
-    return render(request, 'profile.html', context={'profile_form': profile_form, 
+
+            return redirect('profile')
+
+        return render(request, 'profile.html', context={'profile_form': profile_form, 
                                                     'profile_photo': profile_photo})
 
 def delete_profile(request, username):
