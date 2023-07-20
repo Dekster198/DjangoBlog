@@ -19,7 +19,7 @@
             <li>
                       <h2><a href="{% url 'show_post' p.slug%}">{{p.title}}</a></h2>
                       <p>{{p.text}}</p>
-                      {{ p.author }} - {{ p.creation_time }}
+                      {{ p.author.user }} - {{ p.creation_time }}
                       <hr>
             </li>
             {% endfor %}

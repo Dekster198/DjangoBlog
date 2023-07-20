@@ -9,7 +9,7 @@ class Account(models.Model):
     photo = models.ImageField(upload_to='static/images/avatar/', default='static/images/avatar/default/default_img.jpg', blank=True, verbose_name='Фото профиля')
 
 class Post(models.Model):
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(Account, on_delete=models.CASCADE)
     title = models.CharField(max_length=30, verbose_name='Заголовок')
     slug = models.SlugField(max_length=255, null=False, unique=True, db_index=True)
     text = models.TextField(verbose_name='Текст')

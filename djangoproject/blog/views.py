@@ -4,6 +4,9 @@ from django.contrib.auth import authenticate, login as auth_login, logout
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.views import View
+from rest_framework import viewsets, routers, generics
+from .serializers import *
+from .permissions import *
 from .models import *
 from .forms import *
 
@@ -135,3 +138,18 @@ def delete_profile(request, username):
         logout(request)
         user.delete()
         return redirect('home')
+
+class UserAPIListCreate(generics.ListCreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+class UserAPIDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+class AccountViewset(viewsets.ModelViewSet):
+    queryset = Account.objects.all()
+    serializer_class = AccountSerializer
+
+router = routers.SimpleRouter()
+router.register('account', AccountViewset)
