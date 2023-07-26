@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.views import View
 from rest_framework import viewsets, routers, generics
+from rest_framework import permissions
 from .serializers import *
 from .permissions import *
 from .models import *
@@ -142,14 +143,29 @@ def delete_profile(request, username):
 class UserAPIListCreate(generics.ListCreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    permission_classes = (IsAdminOrIsNotAuth, )
 
 class UserAPIDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    permission_classes = (IsOwnerOrIsAdminOrReadOnly, )
 
 class AccountViewset(viewsets.ModelViewSet):
     queryset = Account.objects.all()
     serializer_class = AccountSerializer
+    permission_classes = (IsOwnerOrIsAdminOrReadOnly, )
+
+class PostViewset(viewsets.ModelViewSet):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+    permission_classes = (IsOwnerOrIsAdminOrReadOnly, )
+
+class CommentViewset(viewsets.ModelViewSet):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+    permission_classes = (IsOwnerOrIsAdminOrReadOnly, )
 
 router = routers.SimpleRouter()
 router.register('account', AccountViewset)
+router.register('post', PostViewset)
+router.register('comment', CommentViewset)
