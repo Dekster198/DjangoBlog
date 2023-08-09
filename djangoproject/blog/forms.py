@@ -5,9 +5,17 @@ from .models import *
 
 class RegForm(ModelForm):
     password = forms.CharField(widget=forms.PasswordInput, label='Пароль')
+
     class Meta:
         model = User
         fields = ['username', 'email', 'password']
+
+    def clean(self):
+        cleaned_data = super().clean()
+        if User.objects.filter(email=cleaned_data.get('email')).exists():
+            self.add_error('email', 'Эта почта уже зарегистрирована')
+
+        return cleaned_data
 
 class AuthForm(ModelForm):
     password = forms.CharField(widget=forms.PasswordInput, label='Пароль')

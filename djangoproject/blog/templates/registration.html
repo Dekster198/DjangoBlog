@@ -12,7 +12,9 @@
             <div class="col-md-12">
                 <form method="post" class="form">
                     {% csrf_token %}
-                    {% bootstrap_form reg_form %}
+                    {% for field in reg_form %}
+                        {% bootstrap_field field %}
+                    {% endfor %}
                     <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
                     <a href="{% url 'login' %}">Есть учётная запись? Войдите!</a>
                 </form>

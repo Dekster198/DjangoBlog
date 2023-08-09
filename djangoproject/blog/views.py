@@ -3,7 +3,9 @@ from django.http import HttpResponse, HttpResponseNotFound
 from django.contrib.auth import authenticate, login as auth_login, logout
 from django.contrib.auth.models import User
 from django.contrib import messages
+from django.urls import reverse_lazy, reverse
 from django.views import View
+from django.views.generic import ListView, CreateView
 from rest_framework import viewsets, routers, generics
 from rest_framework import permissions
 from .serializers import *
@@ -24,24 +26,24 @@ def index(request):
     
     return render(request, 'index.html')
 
-def registration(request):
-    if request.method == 'POST':
-        reg_form = RegForm(request.POST)
-        username = request.POST['username']
-        email = request.POST['email']
-        password = request.POST['password']
-        if User.objects.filter(username=username).exists() or User.objects.filter(email=email).exists():
-            messages.add_message(request, messages.INFO, 'Пользователь с таким именем или email уже существует')
-            return redirect('registration')
-        else:
-            user = User.objects.create_user(username, email, password)
-            user.save()
-            account = Account.objects.create(user=user)
-            account.save()
-            return redirect('home')
-    else:
-        reg_form = RegForm()
-        return render(request, 'registration.html', context={'reg_form': reg_form})
+class Registration(CreateView):
+    form_class = RegForm
+    template_name = 'registration.html'
+    success_url = reverse_lazy('home')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['reg_form'] = context['form']
+
+        return context
+
+    def form_valid(self, form):
+        form.instance.password = make_password(form.instance.password)
+        user = form.save()
+        account = Account.objects.create(user=user)
+        account.save()
+
+        return super().form_valid(form)
 
 def login(request):
     if request.method == 'POST':
@@ -68,7 +70,7 @@ def new_post(request):
         post_form = AddPostForm(request.POST)
         if post_form.is_valid():
             post = post_form.save(commit=False)
-            post.author = request.user
+            post.author = Account.objects.get(user=User.objects.get(username=request.user))
             post_form.save()
 
             return redirect('home')
