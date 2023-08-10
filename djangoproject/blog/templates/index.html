@@ -9,7 +9,7 @@
 <h1 align="center" class="display-4">Блог</h1>
 <p align="right">
     {% if user.is_authenticated %}
-    <p align="center">Привет, <a href="{% url 'profile' %}">{{ user.username }}</a><img src="{{ acc.photo.url }}" width="50", height="50">
+    <p align="center">Привет, <a href="{% url 'profile' %}">{{ user.username }}</a> <img src="{{ acc.photo.url }}" width="50", height="50">
     </p>
         <center>
             <a href="{% url 'new_post' %}" class="btn btn-primary">Добавить пост</a>

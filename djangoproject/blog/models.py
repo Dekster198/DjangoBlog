@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.urls import reverse
 from .utils import slugify
 
 # Create your models here.
@@ -16,6 +17,13 @@ class Post(models.Model):
     slug = models.SlugField(max_length=255, null=False, unique=True, db_index=True)
     text = models.TextField(verbose_name='Текст')
     creation_time = models.DateTimeField(auto_now_add=True)
+    update_time = models.DateTimeField(auto_now=True)
+
+    def get_absolute_url(self):
+        return reverse('show_post', kwargs={'the_slug': self.slug})
+
+    def get_time_difference(self):
+        return (self.update_time - self.creation_time).total_seconds()
     
     def save(self, *args, **kwargs):
         if not self.slug:

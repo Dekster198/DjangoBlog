@@ -10,8 +10,14 @@
 
 <pre>
     Автор: {{ author.user }}, {{ creation_time }}
+    {% if time_difference > 1 %}
+    Изменено: {{ update_time }}
+    {% endif %}
 </pre>
         <p style="border-style: solid; border-width: thin; border-color: rgb(13,110,253); position: static; margin-left: 20px; margin-right: 20px;">{{ text }}</p>
+        {% if request.user == author.user %}
+            <button type="button" style="position: static; margin-left: 20px;" class="btn btn-link"><a href="{% url 'edit_post' slug%}">Изменить</a></button>
+        {% endif %}
         <hr>
         <div style="position: static; margin-left: 20px; margin-right: 20px;">
         <h3>Добавить комментарий:</h3>
@@ -28,7 +34,7 @@
                 {% for comment in comments %}
                     <strong><i>{{ comment.author.user.username }}</i></strong>
                     <p>{{ comment.comment }}</p>
-                    {{ comment.comment_time }} 
+                    Отправлено: {{ comment.comment_time }}
                     <hr>   
                 {% endfor %}
             </tr>

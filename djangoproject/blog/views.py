@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.urls import reverse_lazy, reverse
 from django.views import View
-from django.views.generic import ListView, CreateView
+from django.views.generic import ListView, CreateView, UpdateView
 from rest_framework import viewsets, routers, generics
 from rest_framework import permissions
 from .serializers import *
@@ -26,7 +26,7 @@ def index(request):
     
     return render(request, 'index.html')
 
-class Registration(CreateView):
+class RegistrationView(CreateView):
     form_class = RegForm
     template_name = 'registration.html'
     success_url = reverse_lazy('home')
@@ -65,18 +65,27 @@ def logoutView(request):
     logout(request)
     return redirect('home')
 
-def new_post(request):
-    if request.method == 'POST':
-        post_form = AddPostForm(request.POST)
-        if post_form.is_valid():
-            post = post_form.save(commit=False)
-            post.author = Account.objects.get(user=User.objects.get(username=request.user))
-            post_form.save()
+class PostCreateView(CreateView):
+    form_class = AddPostForm
+    template_name = 'new_post.html'
 
-            return redirect('home')
-    else:
-        post_form = AddPostForm()
-        return render(request, 'new_post.html', context={'post_form': post_form})
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['post_form'] = context['form']
+
+        return context
+
+    def form_valid(self, form):
+        post = form.save(commit=False)
+        post.author = Account.objects.get(user=User.objects.get(username=self.request.user))
+        post.save()
+
+        return super().form_valid(form)
+
+class PostUpdateView(UpdateView):
+    model = Post
+    fields = ('title', 'text')
+    template_name = 'edit_post.html'
 
 class PostComment(View):
     def get(self, request, the_slug):
@@ -84,9 +93,10 @@ class PostComment(View):
         comments = Comment.objects.filter(post=post).order_by('-comment_time')
         comment_form = AddCommentForm()
 
-        return render(request, 'post.html', context={'title': post.title, 'text': post.text, 
-                                                 'author': post.author, 'creation_time': post.creation_time, 'comment_form': comment_form,
-                                                 'comments': comments})
+        return render(request, 'post.html', context={'title': post.title, 'slug': post.slug, 'text': post.text,
+                                                 'author': post.author, 'creation_time': post.creation_time,
+                                                 'update_time': post.update_time, 'time_difference': post.get_time_difference(),
+                                                 'comment_form': comment_form, 'comments': comments})
     
     def post(self, request, the_slug):
         comment_form = AddCommentForm(request.POST)

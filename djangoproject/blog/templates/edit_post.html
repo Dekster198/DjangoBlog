@@ -2,20 +2,20 @@
 {% load django_bootstrap5 %}
 
 {% block head %}
-<title>Добавить пост</title>
+<title>Изменить пост</title>
 {% endblock head %}
 
 {% block content %}
-<h1 align="center" class="display-5">Добавить пост</h1>
+<h1 align="center" class="display-5">Изменить пост</h1>
     <div class="container">
         <div class="row my-5">
             <div class="col-md-12">
                 <form method="post" class="form">
                     {% csrf_token %}
-                    {% for field in post_form %}
+                    {% for field in form %}
                         {% bootstrap_field field %}
                     {% endfor %}
-                    <button type="submit" class="btn btn-primary">Создать пост</button>
+                    <button type="submit" class="btn btn-primary">Изменить пост</button>
                 </form>
             </div>
         </div>
