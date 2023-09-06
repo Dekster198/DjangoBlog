@@ -5,9 +5,8 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.urls import reverse_lazy, reverse
 from django.views import View
-from django.views.generic import ListView, CreateView, UpdateView
+from django.views.generic import CreateView, UpdateView
 from rest_framework import viewsets, routers, generics
-from rest_framework import permissions
 from .serializers import *
 from .permissions import *
 from .models import *
@@ -25,6 +24,7 @@ def index(request):
         user=None
     
     return render(request, 'index.html')
+
 
 class RegistrationView(CreateView):
     form_class = RegForm
@@ -45,6 +45,7 @@ class RegistrationView(CreateView):
 
         return super().form_valid(form)
 
+
 def login(request):
     if request.method == 'POST':
         auth_form = AuthForm(request.POST)
@@ -61,9 +62,11 @@ def login(request):
         auth_form = AuthForm()
     return render(request, 'login.html', context={'auth_form': auth_form})
 
-def logoutView(request):
+
+def logout_view(request):
     logout(request)
     return redirect('home')
+
 
 class PostCreateView(CreateView):
     form_class = AddPostForm
@@ -82,10 +85,12 @@ class PostCreateView(CreateView):
 
         return super().form_valid(form)
 
+
 class PostUpdateView(UpdateView):
     model = Post
     fields = ('title', 'text')
     template_name = 'edit_post.html'
+
 
 class PostComment(View):
     def get(self, request, the_slug):
@@ -110,6 +115,7 @@ class PostComment(View):
             return redirect(reverse('show_post', kwargs={'the_slug': the_slug}))
         
         return render(request, 'post.html', context={'comment_form': comment_form})
+
 
 class Profile(View):
     def get(self, request):
@@ -145,6 +151,7 @@ class Profile(View):
         return render(request, 'profile.html', context={'profile_form': profile_form, 
                                                     'profile_photo': profile_photo})
 
+
 def delete_profile(request, username):
     if username == str(request.user):
         user = User.objects.get(username=request.user)
@@ -152,30 +159,36 @@ def delete_profile(request, username):
         user.delete()
         return redirect('home')
 
+
 class UserAPIListCreate(generics.ListCreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = (IsAdminOrIsNotAuth, )
+
 
 class UserAPIDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = (IsOwnerOrIsAdminOrReadOnly, )
 
+
 class AccountViewset(viewsets.ModelViewSet):
     queryset = Account.objects.all()
     serializer_class = AccountSerializer
     permission_classes = (IsOwnerOrIsAdminOrReadOnly, )
+
 
 class PostViewset(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
     permission_classes = (IsOwnerOrIsAdminOrReadOnly, )
 
+
 class CommentViewset(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
     permission_classes = (IsOwnerOrIsAdminOrReadOnly, )
+
 
 router = routers.SimpleRouter()
 router.register('account', AccountViewset)

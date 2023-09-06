@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from .utils import slugify
 
+
 # Create your models here.
 class Account(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -10,6 +11,7 @@ class Account(models.Model):
 
     def __str__(self):
         return self.user.username
+
 
 class Post(models.Model):
     author = models.ForeignKey(Account, on_delete=models.CASCADE, verbose_name='Автор')
@@ -32,7 +34,8 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
-    
+
+
 class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, verbose_name='Пост')
     author = models.ForeignKey(Account, on_delete=models.CASCADE, verbose_name='Автор')

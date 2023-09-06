@@ -1,5 +1,6 @@
 from rest_framework import permissions
 
+
 class IsAdminOrIsNotAuth(permissions.BasePermission):
     def has_permission(self, request, view):
         if request.method in permissions.SAFE_METHODS:
@@ -11,6 +12,7 @@ class IsAdminOrIsNotAuth(permissions.BasePermission):
             return True
 
         return bool(obj.username is None or request.user.is_staff)
+
 
 class IsOwnerOrIsAdminOrReadOnly(permissions.BasePermission):
     def has_permission(self, request, view):

@@ -2,6 +2,7 @@ from rest_framework import serializers
 from django.contrib.auth.hashers import make_password
 from .models import *
 
+
 class AccountSerializer(serializers.ModelSerializer):
     class Meta:
         model = Account
@@ -32,6 +33,7 @@ class UserSerializer(serializers.ModelSerializer):
 
         return user
 
+
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
@@ -45,6 +47,7 @@ class PostSerializer(serializers.ModelSerializer):
             fields['author'] = serializers.HiddenField(default=Account.objects.get(user=request.user))
 
         return fields
+
 
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
