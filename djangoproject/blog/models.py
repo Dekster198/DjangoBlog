@@ -13,10 +13,27 @@ class Account(models.Model):
         return self.user.username
 
 
+class Category(models.Model):
+    name = models.CharField(max_length=50, blank=True, verbose_name='Название категории')
+    slug = models.SlugField(max_length=50, null=False, unique=True, db_index=True)
+
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return reverse('posts_by_category', kwargs={'the_slug': self.slug})
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        return super().save(*args, **kwargs)
+
+
 class Post(models.Model):
     author = models.ForeignKey(Account, on_delete=models.CASCADE, verbose_name='Автор')
-    title = models.CharField(max_length=30, verbose_name='Заголовок')
+    title = models.CharField(max_length=50, verbose_name='Заголовок')
     slug = models.SlugField(max_length=255, null=False, unique=True, db_index=True)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, verbose_name='Категория')
     text = models.TextField(verbose_name='Текст')
     creation_time = models.DateTimeField(auto_now_add=True)
     update_time = models.DateTimeField(auto_now=True)

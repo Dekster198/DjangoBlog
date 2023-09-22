@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.urls import reverse_lazy, reverse
 from django.views import View
-from django.views.generic import CreateView, UpdateView
+from django.views.generic import CreateView, UpdateView, ListView
 from rest_framework import viewsets, routers, generics
 from .serializers import *
 from .permissions import *
@@ -25,6 +25,15 @@ def index(request):
     
     return render(request, 'index.html')
 
+
+def navbar_categories(request):
+    categories = Category.objects.all()
+
+    return {'categories': categories}
+
+
+def pageNotFound(request, exception):
+    return render(request, '404_not_found.html', status=404)
 
 class RegistrationView(CreateView):
     form_class = RegForm
@@ -88,7 +97,7 @@ class PostCreateView(CreateView):
 
 class PostUpdateView(UpdateView):
     model = Post
-    fields = ('title', 'text')
+    fields = ('title', 'category', 'text')
     template_name = 'edit_post.html'
 
 
@@ -98,8 +107,8 @@ class PostComment(View):
         comments = Comment.objects.filter(post=post).order_by('-comment_time')
         comment_form = AddCommentForm()
 
-        return render(request, 'post.html', context={'title': post.title, 'slug': post.slug, 'text': post.text,
-                                                 'author': post.author, 'creation_time': post.creation_time,
+        return render(request, 'post.html', context={'title': post.title, 'slug': post.slug, 'category': post.category,
+                                                'text': post.text, 'author': post.author, 'creation_time': post.creation_time,
                                                  'update_time': post.update_time, 'time_difference': post.get_time_difference(),
                                                  'comment_form': comment_form, 'comments': comments})
     
@@ -115,6 +124,13 @@ class PostComment(View):
             return redirect(reverse('show_post', kwargs={'the_slug': the_slug}))
         
         return render(request, 'post.html', context={'comment_form': comment_form})
+
+
+def posts_by_category(request, the_slug):
+    posts = Post.objects.filter(category__slug=the_slug).order_by('-creation_time')
+    category = Category.objects.get(slug=the_slug)
+
+    return render(request, 'posts_by_category.html', context={'posts': posts, 'category': category})
 
 
 class Profile(View):
@@ -133,18 +149,15 @@ class Profile(View):
         profile_photo = ProfilePhoto(request.POST, request.FILES)
         if profile_form.is_valid() and profile_photo.is_valid():
             user = User.objects.get(username=request.user)
-            acc = Account.objects.get(user=user)
             if profile_form.cleaned_data['username'] != '':
                 username = profile_form.cleaned_data['username']
-                user.username = username
+                user = User.objects.filter(username=request.user).update(username=username)
             if profile_form.cleaned_data['first_name'] != '':
                 first_name = profile_form.cleaned_data['first_name']
-                user.first_name = first_name
+                user = User.objects.filter(username=request.user).update(first_name=first_name)
             if profile_photo.cleaned_data['photo'] is not None:
                 photo = profile_photo.cleaned_data['photo']
-                acc.photo = photo
-            user.save()
-            acc.save()
+                acc = Account.objects.filter(user=user).update(photo=photo)
 
             return redirect('profile')
 

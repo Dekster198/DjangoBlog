@@ -44,7 +44,7 @@ class ProfilePhoto(ModelForm):
 class AddPostForm(ModelForm):
     class Meta:
         model = Post
-        fields = ['title', 'text']
+        fields = ['title', 'category', 'text']
 
 
 class AddCommentForm(ModelForm):

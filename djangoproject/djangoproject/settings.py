@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-%af=&d&j1o=lznpva@ucje#*z)!8geg!_jjd@ogeav^i12wv4y
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1']
 
 
 # Application definition
@@ -66,6 +66,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'blog.views.navbar_categories',
             ],
         },
     },
