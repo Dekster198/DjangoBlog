@@ -14,7 +14,7 @@
                       <h2><a href="{% url 'show_post' p.slug %}">{{ p.title }}</a></h2>
                       <small>Категория: <a href="{% url 'posts_by_category' p.category.slug %}">{{ p.category|lower }}</a></small>
                       <p><font size="5">{{p.text}}</font></p>
-                      {{ p.author.user }} - {{ p.creation_time }}
+                      <a href="{% url 'profile' p.author.user %}">{{ p.author.user }}</a> - {{ p.creation_time }}
                       <hr>
             </li>
             {% endfor %}

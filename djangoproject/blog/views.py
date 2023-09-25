@@ -21,15 +21,20 @@ def index(request):
         
         return render(request, 'index.html', context={'posts': posts, 'acc': acc})
     except User.DoesNotExist:
-        user=None
-    
+        user = None
+
     return render(request, 'index.html')
 
 
-def navbar_categories(request):
-    categories = Category.objects.all()
+def navbar_points(request):
+    try:
+        categories = Category.objects.all()
+        user = User.objects.get(username=request.user)
+        acc = Account.objects.get(user=user)
 
-    return {'categories': categories}
+        return {'categories': categories, 'acc': acc}
+    except User.DoesNotExist:
+        return {'categories': None, 'acc': None}
 
 
 def pageNotFound(request, exception):
@@ -50,6 +55,7 @@ class RegistrationView(CreateView):
         form.instance.password = make_password(form.instance.password)
         user = form.save()
         account = Account.objects.create(user=user)
+        account.photo = 'static/images/avatar/default/default_img.jpg'
         account.save()
 
         return super().form_valid(form)
@@ -134,35 +140,42 @@ def posts_by_category(request, the_slug):
 
 
 class Profile(View):
-    def get(self, request):
+    def get(self, request, username):
+        profile_form_from_user = ProfileFormFromUser()
         profile_form = ProfileForm()
-        profile_photo = ProfilePhoto()
-        username = request.user
         name = User.objects.get(username=username)
         acc = Account.objects.get(user=User.objects.get(username=username))
+        request_username = request.user
 
-        return render(request, 'profile.html', context={'acc': acc, 'username': username, 'name':name.first_name, 'profile_form': profile_form, 
-                                                    'profile_photo': profile_photo})
+        return render(request, 'profile.html', context={'acc': acc, 'username': username, 'request_username': str(request_username),
+                                                    'name':name.first_name, 'profile_form_from_user': profile_form_from_user, 'profile_form': profile_form})
     
-    def post(self, request):
-        profile_form = ProfileForm(request.POST)
-        profile_photo = ProfilePhoto(request.POST, request.FILES)
-        if profile_form.is_valid() and profile_photo.is_valid():
+    def post(self, request, username):
+        profile_form_from_user = ProfileFormFromUser(request.POST)
+        profile_form = ProfileForm(request.POST, request.FILES)
+        if profile_form_from_user.is_valid() and profile_form.is_valid():
             user = User.objects.get(username=request.user)
-            if profile_form.cleaned_data['username'] != '':
-                username = profile_form.cleaned_data['username']
-                user = User.objects.filter(username=request.user).update(username=username)
-            if profile_form.cleaned_data['first_name'] != '':
-                first_name = profile_form.cleaned_data['first_name']
-                user = User.objects.filter(username=request.user).update(first_name=first_name)
-            if profile_photo.cleaned_data['photo'] is not None:
-                photo = profile_photo.cleaned_data['photo']
-                acc = Account.objects.filter(user=user).update(photo=photo)
+            acc = Account.objects.get(user=user)
+            if profile_form_from_user.cleaned_data['username'] != '':
+                username = profile_form_from_user.cleaned_data['username']
+                user.username = username
+            if profile_form_from_user.cleaned_data['first_name'] != '':
+                first_name = profile_form_from_user.cleaned_data['first_name']
+                user.first_name = first_name
+            if profile_form.cleaned_data['birthday'] is not None:
+                birthday = profile_form.cleaned_data['birthday']
+                acc.birthday = birthday
+            if profile_form.cleaned_data['photo'] is not None:
+                photo = profile_form.cleaned_data['photo']
+                acc.photo = photo
 
-            return redirect('profile')
+            user.save()
+            acc.save()
 
-        return render(request, 'profile.html', context={'profile_form': profile_form, 
-                                                    'profile_photo': profile_photo})
+            return redirect('profile', username=user.username)
+
+        return render(request, 'profile.html', context={'profile_form_from_user': profile_form_from_user,
+                                                    'profile_form': profile_form})
 
 
 def delete_profile(request, username):

@@ -9,7 +9,7 @@
 <h1 align="center" class="display-4">Блог</h1>
 <p align="right">
     {% if user.is_authenticated %}
-    <p align="center">Привет, <a href="{% url 'profile' %}">{{ user.username }}</a> <img src="{{ acc.photo.url }}" width="50", height="50">
+    <p align="center">Привет, <a href="{% url 'profile' acc.user.username %}">{{ user.username }}</a> <img src="{{ acc.photo.url }}" width="50", height="50">
     </p>
         <center>
             <a href="{% url 'new_post' %}" class="btn btn-primary">Добавить пост</a>
@@ -19,8 +19,8 @@
             <li>
                       <h2><a href="{% url 'show_post' p.slug %}">{{ p.title }}</a></h2>
                       <small>Категория: <a href="{% url 'posts_by_category' p.category.slug %}">{{ p.category|lower }}</a></small>
-                      <p><font size="5">{{p.text}}</font></p>
-                      {{ p.author.user }} - {{ p.creation_time }}
+                      <p><font size="5">{{ p.text|truncatewords:50 }}</font>     <a href="{{ p.get_absolute_url }}">Читать пост</a></p>
+                      <a href="{% url 'profile' p.author.user %}">{{ p.author.user }}</a> - {{ p.creation_time }}
                       <hr>
             </li>
             {% endfor %}

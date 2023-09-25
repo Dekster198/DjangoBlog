@@ -66,7 +66,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'blog.views.navbar_categories',
+                'blog.views.navbar_points',
             ],
         },
     },
@@ -119,6 +119,8 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = False
+
+DATE_INPUT_FORMATS = ['%d-%m-%Y']
 
 
 # Static files (CSS, JavaScript, Images)

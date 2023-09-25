@@ -27,7 +27,7 @@ class AuthForm(ModelForm):
         fields = ['username', 'password']
 
 
-class ProfileForm(ModelForm):
+class ProfileFormFromUser(ModelForm):
     username = forms.CharField(required=False, label='Имя пользователя')
     
     class Meta:
@@ -35,10 +35,12 @@ class ProfileForm(ModelForm):
         fields = ['username', 'first_name']
 
 
-class ProfilePhoto(ModelForm):
+class ProfileForm(ModelForm):
+    birthday = forms.DateField(required=False, label='День рождения')
+
     class Meta:
         model = Account
-        fields = ['photo']
+        fields = ['birthday', 'photo']
 
 
 class AddPostForm(ModelForm):

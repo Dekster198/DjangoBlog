@@ -14,17 +14,19 @@
                 height="130" style=" border: 8px solid #ffffff;"/>
                 <p><strong>Имя пользователя:</strong> {{ username }}</p>
                 <p><strong>Имя:</strong> {{ name }}</p>
+                <p><strong>День рождения:</strong> {{ acc.birthday }}</p>
         </div>
     </div>
 </div>
+{% if request_username == username %}
 <h1 class="display-6" style="margin-left: 20px;">Изменить данные профиля</h1>
     <div class="container">
         <div class="row my-5">
             <div class="col-md-12">
                 <form method="post" enctype="multipart/form-data" class="form">
                     {% csrf_token %}
+                    {% bootstrap_form profile_form_from_user %}
                     {% bootstrap_form profile_form %}
-                    {% bootstrap_form profile_photo %}
                     <button type="submit" class="btn btn-primary">Изменить</button>
                     <br>
                     <br>
@@ -34,4 +36,5 @@
                 </div>
         </div>
     </div>
+{% endif %}
 {% endblock %}
