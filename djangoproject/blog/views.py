@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.urls import reverse_lazy, reverse
 from django.views import View
-from django.views.generic import CreateView, UpdateView, ListView
+from django.views.generic import CreateView, UpdateView
 from rest_framework import viewsets, routers, generics
 from .serializers import *
 from .permissions import *
@@ -30,7 +30,10 @@ def navbar_points(request):
     try:
         categories = Category.objects.all()
         user = User.objects.get(username=request.user)
-        acc = Account.objects.get(user=user)
+        try:
+            acc = Account.objects.get(user=user)
+        except Account.DoesNotExist:
+            return {'categories': categories, 'acc': None}
 
         return {'categories': categories, 'acc': acc}
     except User.DoesNotExist:
@@ -39,6 +42,7 @@ def navbar_points(request):
 
 def pageNotFound(request, exception):
     return render(request, '404_not_found.html', status=404)
+
 
 class RegistrationView(CreateView):
     form_class = RegForm
