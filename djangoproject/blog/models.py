@@ -47,7 +47,7 @@ class Post(models.Model):
 
     def get_time_difference(self):
         return (self.update_time - self.creation_time).total_seconds()
-    
+
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.title)

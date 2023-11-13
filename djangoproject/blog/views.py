@@ -15,10 +15,12 @@ from .forms import *
 # Create your views here.
 def index(request):
     try:
-        posts = Post.objects.all()
+        posts = Post.objects.all().select_related()
         user = User.objects.get(username=request.user)
-        acc = Account.objects.get(user=user)
-        
+        try:
+            acc = Account.objects.select_related('user').get(user=user)
+        except Account.DoesNotExist:
+            acc = None
         return render(request, 'index.html', context={'posts': posts, 'acc': acc})
     except User.DoesNotExist:
         user = None
@@ -26,11 +28,15 @@ def index(request):
     return render(request, 'index.html')
 
 
+
 def navbar_points(request):
     try:
         categories = Category.objects.all()
-        user = User.objects.get(username=request.user)
-        acc = Account.objects.get(user=user)
+        user = User.objects.filter(username=request.user).first()
+        try:
+            acc = Account.objects.select_related('user').get(user=user)
+        except Account.DoesNotExist:
+            acc = None
 
         return {'categories': categories, 'acc': acc}
     except User.DoesNotExist:
@@ -110,14 +116,14 @@ class PostUpdateView(UpdateView):
 class PostComment(View):
     def get(self, request, the_slug):
         post = get_object_or_404(Post, slug=the_slug)
-        comments = Comment.objects.filter(post=post).order_by('-comment_time')
+        comments = Comment.objects.filter(post=post).order_by('-comment_time').select_related('post')
         comment_form = AddCommentForm()
 
         return render(request, 'post.html', context={'title': post.title, 'slug': post.slug, 'category': post.category,
                                                 'text': post.text, 'author': post.author, 'creation_time': post.creation_time,
                                                  'update_time': post.update_time, 'time_difference': post.get_time_difference(),
                                                  'comment_form': comment_form, 'comments': comments})
-    
+
     def post(self, request, the_slug):
         comment_form = AddCommentForm(request.POST)
         if comment_form.is_valid():
@@ -128,12 +134,12 @@ class PostComment(View):
             comment.save()
 
             return redirect(reverse('show_post', kwargs={'the_slug': the_slug}))
-        
+
         return render(request, 'post.html', context={'comment_form': comment_form})
 
 
 def posts_by_category(request, the_slug):
-    posts = Post.objects.filter(category__slug=the_slug).order_by('-creation_time')
+    posts = Post.objects.filter(category__slug=the_slug).order_by('-creation_time').select_related('category')
     category = Category.objects.get(slug=the_slug)
 
     return render(request, 'posts_by_category.html', context={'posts': posts, 'category': category})
@@ -143,13 +149,13 @@ class Profile(View):
     def get(self, request, username):
         profile_form_from_user = ProfileFormFromUser()
         profile_form = ProfileForm()
-        name = User.objects.get(username=username)
-        acc = Account.objects.get(user=User.objects.get(username=username))
+        user = User.objects.get(username=username)
+        acc = Account.objects.get(user=user)
         request_username = request.user
 
         return render(request, 'profile.html', context={'acc': acc, 'username': username, 'request_username': str(request_username),
-                                                    'name':name.first_name, 'profile_form_from_user': profile_form_from_user, 'profile_form': profile_form})
-    
+                                                    'name':user.first_name, 'profile_form_from_user': profile_form_from_user, 'profile_form': profile_form})
+
     def post(self, request, username):
         profile_form_from_user = ProfileFormFromUser(request.POST)
         profile_form = ProfileForm(request.POST, request.FILES)
