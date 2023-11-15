@@ -32,19 +32,11 @@ def index(request):
 def navbar_points(request):
     try:
         categories = Category.objects.all()
-<<<<<<< HEAD
-        user = User.objects.get(username=request.user)
-        try:
-            acc = Account.objects.get(user=user)
-        except Account.DoesNotExist:
-            return {'categories': categories, 'acc': None}
-=======
         user = User.objects.filter(username=request.user).first()
         try:
             acc = Account.objects.select_related('user').get(user=user)
         except Account.DoesNotExist:
             acc = None
->>>>>>> 962455640913d620c9440e0f80dff21604ad1a5f
 
         return {'categories': categories, 'acc': acc}
     except User.DoesNotExist:
