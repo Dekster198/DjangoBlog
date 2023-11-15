@@ -9,7 +9,7 @@
 <h1 class="display-6" style="position: static; margin-left: 20px;">{{ title }}</h1>
 
 <pre>
-    Автор: {{ author.user }}, {{ creation_time }}
+    Автор: <a href="{% url 'profile' author.user %}">{{ author.user }}</a>, {{ creation_time }}
     {% if time_difference > 1 %}
     Изменено: {{ update_time }}
     {% endif %}
@@ -33,10 +33,10 @@
         <table>
             <tr>
                 {% for comment in comments %}
-                    <strong><i>{{ comment.author.user.username }}</i></strong>
+                    <strong><i><a href="{% url 'profile' comment.author.user.username %}">{{ comment.author.user.username }}</a></i></strong>
                     <p>{{ comment.comment }}</p>
                     Отправлено: {{ comment.comment_time }}
-                    <hr>   
+                    <hr>
                 {% endfor %}
             </tr>
         </table>
