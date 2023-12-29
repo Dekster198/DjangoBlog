@@ -12,6 +12,8 @@ urlpatterns = [
     path('post/<slug:slug>/edit', PostUpdateView.as_view(), name='edit_post'),
     path('profile/<str:username>', Profile.as_view(), name='profile'),
     path('delete_profile/<str:username>', delete_profile, name='delete_profile'),
+    path('feedback', FeedbackFormView.as_view(), name='feedback'),
+    path('feedback_success', SuccessFeedbackView.as_view(), name='feedback_success'),
     path('api/v1/user/', UserAPIListCreate.as_view()),
     path('api/v1/user/<int:pk>/', UserAPIDetailView.as_view()),
     path('api/v1/', include(router.urls)),

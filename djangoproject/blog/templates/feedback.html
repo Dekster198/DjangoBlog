@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load django_bootstrap5 %}
+
+{% block head %}
+<title>Обратная связь</title>
+{% endblock head %}
+
+{% block content %}
+    <h2 align="center" class="display-4">Обратная связь</h2>
+    <div class="container">
+        <div class="row my-5">
+            <div class="col-md-12">
+                <form method="post" class="form">
+                    {% csrf_token %}
+                    {% for field in form %}
+                        {% bootstrap_field field %}
+                    {% endfor %}
+                    <button type="submit" class="btn btn-primary">Отправить</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

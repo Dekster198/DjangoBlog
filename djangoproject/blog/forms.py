@@ -1,7 +1,10 @@
 from django import forms
-from django.forms import ModelForm
+from django.forms import ModelForm, Form
 from django.forms.widgets import PasswordInput
+from django.core.mail import send_mail
+
 from .models import *
+from .tasks import send_feedback_email_task
 
 
 class RegForm(ModelForm):
@@ -55,3 +58,14 @@ class AddCommentForm(ModelForm):
     class Meta:
         model = Comment
         fields = ['comment']
+
+class FeedbackForm(Form):
+    email = forms.EmailField()
+    message = forms.CharField(widget=forms.Textarea(attrs={'rows': 3, 'cols': 150, 'style': 'resize: none'}), label='Сообщение', required=True)
+
+    def send_email(self):
+        print('Отправка сообщения')
+        send_feedback_email_task.delay(
+            self.cleaned_data['email'],
+            self.cleaned_data['message']
+        )

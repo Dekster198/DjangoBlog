@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% load django_bootstrap5 %}
+
+{% block head %}
+<title>Обратная связь</title>
+{% endblock head %}
+
+{% block content %}
+    <h2 align="center" class="display-4">Обратная связь</h2>
+    <div class="container">
+        <div class="row my-5">
+            <div class="col-md-12">
+                <p align="center">Сообщение успешно отправлено. Переадресация на главную страницу произойдёт автоматически через 5 секунд<br>
+                Если переадресация не произошла - нажмите на <a href="{% url 'home' %}">ссылку</a></p>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

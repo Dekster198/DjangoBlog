@@ -1,3 +1,4 @@
+import time
 from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponse, HttpResponseNotFound
 from django.contrib.auth import authenticate, login as auth_login, logout
@@ -5,7 +6,7 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.urls import reverse_lazy, reverse
 from django.views import View
-from django.views.generic import CreateView, UpdateView
+from django.views.generic import CreateView, UpdateView, FormView, TemplateView
 from rest_framework import viewsets, routers, generics
 from .serializers import *
 from .permissions import *
@@ -191,6 +192,20 @@ def delete_profile(request, username):
         logout(request)
         user.delete()
         return redirect('home')
+
+
+class FeedbackFormView(FormView):
+    template_name = "feedback.html"
+    form_class = FeedbackForm
+    success_url = "/feedback_success"
+
+    def form_valid(self, form):
+        form.send_email()
+        return super().form_valid(form)
+
+
+class SuccessFeedbackView(TemplateView):
+    template_name = "feedback_success.html"
 
 
 class UserAPIListCreate(generics.ListCreateAPIView):
