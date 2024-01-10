@@ -64,7 +64,6 @@ class FeedbackForm(Form):
     message = forms.CharField(widget=forms.Textarea(attrs={'rows': 3, 'cols': 150, 'style': 'resize: none'}), label='Сообщение', required=True)
 
     def send_email(self):
-        print('Отправка сообщения')
         send_feedback_email_task.delay(
             self.cleaned_data['email'],
             self.cleaned_data['message']
